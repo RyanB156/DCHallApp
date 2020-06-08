@@ -1,0 +1,676 @@
+﻿@model DCHallApp.Models.Applicant
+@{
+    ViewBag.Title = "Apply";
+}
+
+<style>
+    input, textarea, select {
+        border: 1.2px solid rgb(128, 128, 128);
+        border-radius: 3px;
+    }
+
+    input {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    textarea {
+        width: 100%;
+    }
+</style>
+
+<!--Title-->
+<h1 class="text-center pb-4">Driver's Application For Employment</h1>
+
+@using (@Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <!--Name and date-->
+    <div class="container">
+        <div class="row justify-content-start">
+            <div class="col">
+                <label for="FullName" class="label-default">Applicant Name</label>
+                @Html.TextBoxFor(m => m.FullName)
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col pb-3">
+                <label for="applicationDate" class="label-default">Date of Application </label>
+                @Html.EditorFor(m => m.ApplicationDate, new { id = "applicationDate" })
+                @Html.ValidationMessageFor(m => m.ApplicationDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="col">
+                <label for="EmailAddress">Email Address</label>
+                @Html.TextBoxFor(m => m.EmailAddress)
+            </div>
+        </div>
+    </div>
+
+    <!--Discolsure and authorization-->
+    <div>
+        <p>I authorize you to make such investigations and inquiries of my personal, employment, financial or medical history and other related matters as may be necessary in arriving at an employment decision. (Generally, inquiries regarding medical history will be made only if and after a conditional offer of employment has been extended.)</p>
+        <p>I heareby release employers, schools, health care providers and other persons from all liability in responding to inquiries and releasing information in connection with my application.</p>
+        <p>In the event of employment, I understand that false or misleading information given in my application or interview(s) may result in discharge. I understand, also, that I am required to abide by all rules and regulations of the Company.</p>
+        <p>I understand that information I provide ragarding current and/or previous employers may be used, and those employer(s) will be contacted, for the purpose of investigating my safety performance history as required by 49 CFT 391.23(d) and (e). I understand that I have the right to:</p>
+        <ul class="pb-3">
+            <li>Review information provided by previous employers</li>
+            <li>Have errors in the information corrected by previous employers and for those previous employers to re-send the corrected information to the prospective employer</li>
+            <li>Have a rebuttal statement attached to the alleged erroneous information, if the previous employer(s) and I cannot agree on the accuracy of the information.</li>
+        </ul>
+
+        <p>Please enter your initials and today's date to acknowledge that you understand and agree to the above statements.</p>
+
+        <div class="container">
+            <div class="row justify-content-start">
+                <div class="col">
+                    <label for="Initials">Initials</label>
+                    @Html.TextBoxFor(m => m.Initials)
+                    @Html.ValidationMessageFor(m => m.Initials, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <label for="DisclosureDate">Date</label>
+                    @Html.EditorFor(m => m.DisclosureDate)
+                    @Html.ValidationMessageFor(m => m.DisclosureDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+    </div>
+
+    <!--Position, name and SSN-->
+    <div>
+
+        <div class="container">
+            <div class="row justify-content-start">
+                <div class="col-sm-4">
+                    <label for="FirstName">First name</label>
+                    @Html.TextBoxFor(m => m.FirstName)
+                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    <label for="LastName">Last name</label>
+                    @Html.TextBoxFor(m => m.LastName)
+                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    <label for="MiddleInitial">Middle Initial</label>
+                    @Html.TextBoxFor(m => m.MiddleInitial, new { maxLength = 1 })
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-sm-4">
+                    <label for="Position">Position</label>
+                    @Html.TextBoxFor(m => m.Position)
+                    @Html.ValidationMessageFor(m => m.Position, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    <label for="PhoneNumber">Phone</label>
+                    @Html.TextBoxFor(m => m.PhoneNumber, new { placeholder = "(123)456-7890", pattern = @"\d?\(?\d{3}\)?\d{3}-?\d{4}" })
+                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+    </div>
+
+    <!--Addresses (current and previous)-->
+    <div class="container">
+
+        <label for="currentAddress">Current Address</label>
+        <div id="currentAddress">
+            @Html.TextBoxFor(m => m.CurrentAddress.Address.Street, new { placeholder = "Street" })
+            @Html.TextBoxFor(m => m.CurrentAddress.Address.City, new { placeholder = "City" })
+            @Html.TextBoxFor(m => m.CurrentAddress.Address.State, new { placeholder = "State" })
+            @Html.TextBoxFor(m => m.CurrentAddress.Address.Zip, new { placeholder = "Zip" })
+            <label for="TimeLivedHere">How long have you lived here?</label>
+            @Html.TextBoxFor(m => m.CurrentAddress.TimeLivedHere)
+        </div>
+
+        <hr />
+
+    </div>
+
+    <!--Work authorization, date of birth, proof of age-->
+    <div class="container">
+
+        <div class="row justify-content-start">
+            <div class="col">
+                <label for="workAuthorizedChoice">Do you have the legal right to work in the United States?</label>
+                <span id="workAuthorizedChoice">
+                    @Html.RadioButtonFor(m => m.WorkAuthorized, "no", new { id = "notAuthorized" })
+                    <label for="notAuthorized">no</label>
+                    @Html.RadioButtonFor(m => m.WorkAuthorized, "yes", new { id = "authorized" })
+                    <label for="authorized">yes</label>
+                    <br />
+                </span>
+            </div>
+        </div>
+
+        <label for="BirthDate">Date of Birth</label>
+        @Html.EditorFor(m => m.BirthDate)
+        @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger" })
+
+        <div class="row justify-content-start">
+            <div class="col">
+
+                <label for="proofOfAgeChoice">Can you provide proof of age?</label>
+                <div id="proofOfAgeChoice">
+                    @Html.RadioButtonFor(m => m.CanProveAge, "no", new { id = "noProof" })
+                    <label for="noProof">no</label>
+                    @Html.RadioButtonFor(m => m.CanProveAge, "yes", new { id = "hasProof" })
+                    <label for="hasProof">yes</label>
+                </div>
+            </div>
+        </div>
+
+        <!--Past employment at this company-->
+        <label for="workedHereBeforeChoice">Have you worked for this company before?</label>
+        <div id="workedHereBeforeChoice">
+            @Html.RadioButtonFor(m => m.HasWorkedHereBefore, "no", new { id = "hasNotWorkedHere" })
+            <label for="hasNotWorkedHere">no</label>
+            @Html.RadioButtonFor(m => m.HasWorkedHereBefore, "yes", new { id = "hasWorkedHere" })
+            <label for="hasWorkedHere">yes</label>
+        </div>
+
+        <label for="WhereWorkedBefore">If so, where?</label>
+        @Html.TextBoxFor(m => m.WhereWorkedBefore)
+
+        <div class="row">
+            <div class="col">
+                <label for="workDates">Dates:</label>
+            </div>
+        </div>
+        <div id="workDates" class="row justify-content-start">
+            <div class="col">
+                <label for="StartDateBefore">From</label>
+                @Html.EditorFor(m => m.StartDateBefore)
+            </div>
+            <div class="col">
+                <label for="EndDateBefore">To</label>
+                @Html.EditorFor(m => m.EndDateBefore)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="PayBefore">Pay Rate</label>
+                @Html.TextBoxFor(m => m.PayBefore)
+            </div>
+            <div class="col-sm-6">
+                <label for="PositionBefore">Position</label>
+                @Html.TextBoxFor(m => m.PositionBefore)
+            </div>
+        </div>
+
+        <div class="row justify-content-start">
+            <div class="col">
+                <label for="ReasonForLeavingBefore">Reason for leaving</label>
+            </div>
+        </div>
+        <div class="row justify-content-start">
+            <div class="col">
+                @Html.TextAreaFor(m => m.ReasonForLeavingBefore)
+            </div>
+        </div>
+
+        <label for="currentEmploymentState">Are you now employed?</label>
+        <div id="currentEmploymentState">
+            @Html.RadioButtonFor(m => m.IsCurrentlyEmployed, "no", new { id = "notEmployed" })
+            <label for="notEmployed">no</label>
+            @Html.RadioButtonFor(m => m.IsCurrentlyEmployed, "yes", new { id = "isEmployed" })
+            <label for="isEmployed">yes</label>
+        </div>
+
+        <label for="MonthsSinceEmployment">If not, how long since leaving last employment?</label>
+        @Html.TextBoxFor(m => m.TimeSinceEmployment)
+
+        <label for="WhoReferred">Who referred you?</label>
+        @Html.TextBoxFor(m => m.WhoReferred)
+
+        <label for="RateOfPayExpected">Rate of pay expected</label>
+        @Html.TextBoxFor(m => m.RateOfPayExpected)
+
+        <!--Current employment, referall, pay, bonded, bonding company-->
+        <label for="bondedChoice">Have you ever been bonded?</label>
+        <div id="bondedChoice">
+            @Html.RadioButtonFor(m => m.HasBeenBonded, "no", new { id = "notBeenBonded" })
+            <label for="notBeenBonded">no</label>
+            @Html.RadioButtonFor(m => m.HasBeenBonded, "yes", new { id = "hasBeenBonded" })
+            <label for="hasBeenBonded">yes</label>
+        </div>
+
+        <label for="NameOfBondingCompany">If so, who bonded you?</label>
+        @Html.TextBoxFor(m => m.NameOfBondingCompany)
+
+        <hr />
+
+        <!--Unable to perform duties and why-->
+        <label for="performDutiesChance">Can you perform the functions of the job for which you have applied?</label>
+        <div id="performDutiesChance">
+            @Html.RadioButtonFor(m => m.CanPerformDuties, "no", new { id = "cannotDoDuties" })
+            <label for="cannotDoDuties">no</label>
+            @Html.RadioButtonFor(m => m.CanPerformDuties, "yes", new { id = "canDoDuties" })
+            <label for="canDoDuties">yes</label>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="ReasonForNotPerformingDuties">If not, explain why</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @Html.TextAreaFor(m => m.ReasonForNotPerformingDuties)
+            </div>
+        </div>
+
+        <hr />
+
+    </div>
+
+
+    <!--Employment history with 2 subtext markers to explain abbreviations and definitions-->
+    <div>
+        <h2 class="text-center">Employment History</h2>
+        <p>All driver applicants to drive in interstate commerce must provide the following information on all employers during the preceding 3 years.</p>
+        <p>Applicants to drive a commercial motor vehicle<sup>*</sup> in intrastate or interstate commerce shall also provide an aditional 7 years' information on those employers for whom the applicant operated such a vehicle.</p>
+        <p>(<strong>NOTE: </strong>List employers in reverse order starting with the most recent.)</p>
+
+        <div class="container border rounded px-4 py-2">
+            @for (var i = 0; i < Model.EmploymentHistory.Count; i++)
+            {
+            <div class="border rounded px-4 py-2 mb-2">
+                <p class="h5">@(i + 1).</p>
+                <div class="row justify-content-start">
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].EmployerName, new { placeholder = "Name" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].Address.Street, new { placeholder = "Street" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].Address.City, new { placeholder = "City" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].Address.State, new { placeholder = "State" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].Address.Zip, new { placeholder = "Zip" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].ContactPerson, new { placeholder = "Contact Name" })
+                    @Html.TextBoxFor(m => m.EmploymentHistory[i].PhoneNumber, new { placeholder = "Contact Number" })
+
+                </div>
+
+                <label for="fm">Were you subject to the FMCSRs<sup>+</sup> while employed?</label>
+                <div id="fm">
+                    @Html.RadioButtonFor(m => m.EmploymentHistory[i].WasSubjectToFMCSRs, "no", new { id = "noFm" })
+                    <label for="noFm">no</label>
+                    @Html.RadioButtonFor(m => m.EmploymentHistory[i].WasSubjectToFMCSRs, "yes", new { id = "yesFm" })
+                    <label for="yesFm">yes</label>
+                </div>
+
+                <label for="testing">Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements of 49 CFR Part 40?</label>
+                <div id="testing">
+                    @Html.RadioButtonFor(m => m.EmploymentHistory[i].WasSubjectToTesting, "no", new { id = "noTesting" })
+                    <label for="noTesting">no</label>
+                    @Html.RadioButtonFor(m => m.EmploymentHistory[i].WasSubjectToTesting, "yes", new { id = "testing" })
+                    <label for="testing">yes</label>
+                </div>
+
+                <div class="row justify-content-start">
+                    <div class="col">
+                        <label for="PositionHeld">Position</label>
+                        @Html.TextBoxFor(m => m.EmploymentHistory[i].PositionHeld)
+                    </div>
+                    <div class="col">
+                        <label for="startDate">Start Date</label>
+                        @Html.EditorFor(m => m.EmploymentHistory[i].StartTime)
+                    </div>
+                    <div class="col">
+                        <label for="EndTime">End Date</label>
+                        @Html.EditorFor(m => m.EmploymentHistory[i].EndTime)
+                    </div>
+                </div>
+                <div class="row justify-content-start">
+                    <div class="col-sm-4">
+                        <label for="SalaryOrWage">Salary/Wage</label>
+                        @Html.TextBoxFor(m => m.EmploymentHistory[i].SalaryOrWage)
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="ReasonForLeaving">Reason for leaving</label>
+                        @Html.TextAreaFor(m => m.EmploymentHistory[i].ReasonForLeaving)
+                    </div>
+                </div>
+
+            </div>
+            }
+
+        </div>
+        <!--End employment history entry-->
+
+        <p><sup>*</sup>Includes vehicles having a GVWR of 26,001 lbs. or more, vehicles designed to transport 16 or more passengers (including the driver), or any size vehicle used to transport hazardous materials in a quantity requiring placarding.</p>
+        <p><sup>+</sup>The Federal Motor Carrier Safety Regulations (FMCSRs) apply to anyone operating a motor vehicle on a highway in interstate commerce to transport passengers or property when the vehicle weighs or has a GVWR of 10,001 pounds or greater</p>
+
+        <hr />
+
+    </div>
+
+    <!--Accidents-->
+    <div>
+        <h2 class="text-center">Accident Record</h2>
+
+        <div class="container border rounded px-4 py-2">
+
+            @for (var i = 0; i < Model.AccidentHistory.Count; i++)
+            {
+            <div class="border rounded px-4 py-2 mb-2">
+                <p class="h5">@(i + 1).</p>
+                <div class="row justify-content-start">
+                    <div class="col">
+                        <label for="acidentDate">Date</label>
+                        @Html.EditorFor(m => m.AccidentHistory[i].Date, new { id = "accidentDate" })
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <label for="description">Description</label>
+                        @Html.TextAreaFor(m => m.AccidentHistory[i].Description, new { id = "description" })
+                    </div>
+                </div>
+                <div class="row justify-content-start">
+                    <div class="col-sm-3 col-md-6">
+                        <label for="injuryChoice">Injuries</label>
+                        <div id="injuryChoice">
+                            @Html.RadioButtonFor(m => m.AccidentHistory[i].Injuries, "no", new { id = "noInjuries" })
+                            <label for="noInjuries">no</label>
+                            @Html.RadioButtonFor(m => m.AccidentHistory[i].Injuries, "yes", new { id = "injuries" })
+                            <label for="injuries">yes</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-md-6">
+                        <label for="fatalityChoice">Fatalities?</label>
+                        <div id="fatalityChoice">
+                            @Html.RadioButtonFor(m => m.AccidentHistory[i].Fatalities, "no", new { id = "noFatalities" })
+                            <label for="noFatalities">no</label>
+                            @Html.RadioButtonFor(m => m.AccidentHistory[i].Fatalities, "yes", new { id = "fatalities" })
+                            <label for="fatalities">yes</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            }
+
+        </div>
+        <!--End of Accident history entry-->
+
+        <hr />
+    </div>
+
+    <!--Traffic Convictions-->
+    <div>
+        <h2 class="text-center">Traffic convictions</h2>
+
+        <div class="container border rounded px-4 py-2">
+
+            @for (var i = 0; i < Model.TrafficConvictions.Count; i++)
+            {
+            <div class="border rounded px-4 py-2 mb-2">
+                <p class="h5">@(i + 1).</p>
+                <div class="row justify-content-start">
+                    <div class="col">
+                        <label for="convictionLocation">Location</label>
+                        @Html.TextBoxFor(m => m.TrafficConvictions[i].Location, new { id = "convictionLocation" })
+                    </div>
+                    <div class="col">
+                        <label for="convictionDate">Date</label>
+                        @Html.EditorFor(m => m.TrafficConvictions[i].Date, new { id = "convictionDate" })
+                    </div>
+                </div>
+                <div class="row justify-content-start">
+                    <div class="col">
+                        <label for="convictionCharge">Charge</label>
+                        @Html.TextAreaFor(m => m.TrafficConvictions[i].Charge, new { id = "convictionCharge" })
+                    </div>
+                    <div class="col">
+                        <label for="convictionPenalty">Penalty</label>
+                        @Html.TextAreaFor(m => m.TrafficConvictions[i].Penalty, new { id = "convictionPenalty" })
+                    </div>
+                </div>
+            </div>
+            }
+
+        </div>
+        <!--End of traffic conviction entries-->
+
+        <hr />
+    </div>
+
+    <!--Experience-->
+    <div>
+        <!--Licenses or permits-->
+        <div>
+            <h2 class="text-center">Experience and Qualifications</h2>
+
+            <div class="container border rounded px-4 py-2">
+
+                @for (var i = 0; i < Model.Qualifications.Count; i++)
+                {
+                    <div class="border rounded px-4 py-2 mb-2">
+                        <p class="h5">@(i + 1).</p>
+                        <div class="row justify-content-start">
+                            <div class="col">
+                                <label for="qualificationsState">State</label>
+                                @Html.TextBoxFor(m => m.Qualifications[i].State, new { id = "qualificationsState" })
+                            </div>
+                            <div class="col pb-2">
+                                <label for="qualificationsLicense">License Number</label>
+                                @Html.TextBoxFor(m => m.Qualifications[i].LicenseNumber, new { id = "qualificationsLicense" })
+                            </div>
+                            <div class="col">
+                                <label for="qualificationsClass">Class</label>
+                                @Html.TextBoxFor(m => m.Qualifications[i].Class, new { id = "qualificationsClass" })
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col-xs-12 col-sm-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="qualificationsEndorsement">Endorsement(s)</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        @Html.TextAreaFor(m => m.Qualifications[i].Endorsement, new { id = "qualificationsEndorsement" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label for="qualificationsExpirationDate">Expiration Date</label>
+                                @Html.EditorFor(m => m.Qualifications[i].ExpirationDate, new { id = "qualificationsExpirationDate" })
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+            <!--End of experience entries-->
+
+            <label for="deniedChoice"><strong>A.</strong> Have you ever been denied a license, permit, or privilege to operate a motor vehicle?</label>
+            <div id="deniedChoice">
+                @Html.RadioButtonFor(m => m.LicenseHasBeenDenied, "no", new { id = "notDenied" })
+                <label for="notDenied">no</label>
+                @Html.RadioButtonFor(m => m.LicenseHasBeenDenied, "yes", new { id = "denied" })
+                <label for="denied">yes</label>
+            </div>
+
+            <label for="revokedChoice"><strong>B.</strong> Has any license, permit, or privilege ever been suspended or revoked?</label>
+            <div id="revokedChoice">
+                @Html.RadioButtonFor(m => m.LicenseHasBeenSuspended, "no", new { id = "notSuspended" })
+                <label for="notSuspended">no</label>
+                @Html.RadioButtonFor(m => m.LicenseHasBeenSuspended, "yes", new { id = "suspended" })
+                <label for="suspended">yes</label>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="deniedOrSuspendedReason">If you answered yes to A or B, explain</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.WhyDeniedOrSuspended, new { id = "deniedOrSuspendedReason" })
+                </div>
+            </div>
+
+            <hr />
+        </div>
+
+        <!--Driving experience-->
+        <div>
+            <h2 class="text-center">Driving Experience</h2>
+            <div class="container border rounded px-4 py-2">
+
+                @for (var i = 0; i < Model.DrivingExperience.Count; i++)
+                {
+                    <div class="border rounded px-4 py-2 mb-2">
+                        <p class="h5">@(i + 1).</p>
+                        <div class="row justify-content-start pb-3">
+                            <div class="col">
+                                <label for="drivingExperienceDescription">Description</label>
+                                @Html.TextAreaFor(m => m.DrivingExperience[i].Description, new { id = "drivingExperienceDescription" })
+                            </div>
+                            <div class="col">
+                                <label for="drivingExperienceApproxMiles">Approx. Miles</label>
+                                @Html.TextBoxFor(m => m.DrivingExperience[i].ApproxMiles, new { id = "drivingExperienceApproxMiles" })
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col">
+                                <label for="drivingExperienceStartDate">Start Date</label>
+                                @Html.EditorFor(m => m.DrivingExperience[i].StartDate, new { id = "drivingExperienceStartDate" })
+                            </div>
+                            <div class="col">
+                                <label for="drivingExperienceEndDate">End Date</label>
+                                @Html.EditorFor(m => m.DrivingExperience[i].EndDate, new { id = "drivingExperienceEndDate" })
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!--End of driving experience entries-->
+        </div>
+
+        <!--Other experience-->
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <label for="StatesOperatedIn">In which states have you operated in the last five years?</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.StatesOperatedIn)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="SpecialCoursesOrTraining">Do you have any special courses or training?</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.SpecialCoursesOrTraining)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="SafeDrivingAwards">Do you have any safe driving awards?</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.SafeDrivingAwards)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="OtherExperience">List other experience that will help you in this position</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.OtherExperience)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="OtherEquipment">List other equipment that you can work with</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.TextAreaFor(m => m.OtherEquipment)
+                </div>
+            </div>
+
+            <!--Education-->
+            <div>
+                <label for="education">Select the highest level of education you have completed. If none of the listed options apply to you, select other and describe your education.</label>
+                <div id="education" class="row">
+                    <div class="col">
+                        @Html.DropDownListFor(m => m.YearCompleted, new SelectList(Enum.GetValues(typeof(DCHallApp.Models.YearChoice))), "Select Year")
+                        @Html.ValidationMessageFor(m => m.YearCompleted, "", new { @class = "text-danger" })
+                        @Html.DropDownListFor(m => m.SchoolLevel, new SelectList(Enum.GetValues(typeof(DCHallApp.Models.SchoolChoice))), "Select School Level")
+                        @Html.ValidationMessageFor(m => m.SchoolLevel, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row my-2 justify-content-start">
+                    <div class="col">
+                        @Html.TextAreaFor(m => m.OtherSchooling)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="LastSchoolAttendedName">School Name</label>
+                        @Html.TextAreaFor(m => m.LastSchoolAttendedName)
+                    </div>
+                    <div class="col">
+                        <label for="LastSchoolAttendedAddress">School Address</label>
+                        @Html.TextAreaFor(m => m.LastSchoolAttendedAddress)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <!--Certify completion-->
+        <div>
+            <h4 class="text-center">To be read and signed by applicant</h4>
+            <p>This certifies that this application was completed by me and that all entries on it and information in it are true.</p>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9 col-md-6 pb-3">
+                        <label for="CertifySignature">Type your name here to certify this application:</label>
+                        @Html.TextBoxFor(m => m.CertifySignature)
+                        @Html.ValidationMessageFor(m => m.CertifySignature, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <label for="CertifyDate">Date:</label>
+                        @Html.EditorFor(m => m.CertifyDate)
+                        @Html.ValidationMessageFor(m => m.CertifyDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary m-2 text-center w-50" value="Submit" />
+        </div>
+    </div>
+
+
+
+}
